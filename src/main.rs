@@ -12,6 +12,7 @@ mod prompt_utils;
 mod utils;
 mod agents;
 mod extractors;
+mod axriv;
 
 use agents::ollama_agent;
 
@@ -165,7 +166,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // let response = ask_with_history(&client, "What is an intresting fact about this city?", history).await?;
     
-    let d_response = extractors::extract_recommend_topic("qwen3:14b", "Can you please recommend me a very bad time travel movie?").await?;
+    // let d_response = extractors::extract_recommend_topic("qwen3:14b", "Can you please recommend me a very bad time travel movie?").await?;
+    let papers = axriv::search_papers("qwen3:14b", "latest ai agents technology ").await?;
+
+    for paper in papers {
+        println!("Title: {}", paper.title);
+        println!("Authors: {}", paper.authors.join(", "));
+        println!("Abstract: {}", paper.abstract_text);
+        println!("URL: {}", paper.url);
+        println!("Categories: {}", paper.categories.join(", "));
+        println!();
+    }
 
     // prompt_engineering(&client).await?;
     // println!("Response: {}", response);
@@ -204,6 +215,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     //         Expected Output: A comprehensive 3 paragraphs long report on the latest jokes.
     //     ")
     //     .await?;
-    println!("{:?}", d_response);
+    // println!("{:?}", d_response);
     Ok(())
 }
